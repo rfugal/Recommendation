@@ -6,3 +6,28 @@
     font-weight: normal;
     color: mediumvioletred;
 }
+.addBookText {
+    width:500px;
+    height:20em;
+}
+.btn-addBook {
+    width:500px;
+}
+.fluent-true {
+    font-weight: bold;
+    font-size: 14pt;
+    color: forestgreen;
+}
+.fluent-false {
+    text-decoration: line-through;
+    font-weight: normal;
+    font-size: 9pt;
+    color: lightslategray;
+}
+.div-word {
+    float: left;
+    padding: 50px;
+}
+.div-book {
+    padding: 50px;
+}
