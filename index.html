@@ -1,0 +1,50 @@
+<!doctype html>
+<html ng-app>
+<head>
+	<script src="http://code.angularjs.org/angular-1.0.0rc3.min.js"></script>
+	<script type="text/javascript" src="underscore.js"></script>
+    <script type="text/javascript" src="words.js"></script>
+<!--    <script type="text/javascript" src="todo.js"></script> -->
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+<!--    <link rel="stylesheet" href="todo.css"> -->
+    <link rel="stylesheet" href="words.css">
+    
+</head>
+<body>
+
+<!-- 
+<div ng-controller="TodoCtrl">
+    <h2>Total todos: {{getTotalTodos()}}</h2>
+    <ul class="list-unstyled">
+        <li ng-repeat="todo in todos">
+            <input type="checkbox" ng-model="todo.done">
+            <span class="done-{{todo.done}}">{{todo.text}}</span>
+        </li>
+    </ul>
+    <form class="form-horizontal">
+        <input type="text" ng-model="formTodoText" ng-model-instant>
+        <button class="btn" ng-click="addTodo()"><i class="glyphicon-plus"></i>Add</button>
+    </form>
+    <button class="btn-large" ng-click="clearCompleted()"><i class="glyphicon-trash"></i> Clear Completed</button>
+</div>
+-->
+
+<div ng-controller="WordsCtrl">
+    <h2>Total Words Recognized: {{getFamiliarWords()}}</h2>
+    <form class="form-horizontal">
+        <input type="text" ng-model="formInputText" ng-model-instant>
+        <button class="btn" ng-click="addWords()"><i class="glyphicon-plus"></i>Add</button>
+    </form>
+    <table class="table-striped table-hover">
+        <tr ng-repeat="(word, value) in Words">
+            <td><label class="RAN-{{value.RAN}}">
+                <input type="checkbox" ng-model="value.RAN">
+                &emsp;{{word}}&emsp;
+            </label><td/>
+            <td>&emsp;{{value.encounters}}&emsp;</td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>

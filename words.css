@@ -1,0 +1,8 @@
+.RAN-true{
+    font-weight: bold;
+    color: black;
+}
+.RAN-false{
+    font-weight: normal;
+    color: mediumvioletred;
+}
