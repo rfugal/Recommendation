@@ -1,7 +1,7 @@
 <!doctype html>
 <html ng-app>
 <head>
-	<script src="http://code.angularjs.org/angular-1.0.0rc3.min.js"></script>
+	<script type="text/javascript" src="angular/angular-1.0.0rc3.min.js"></script>
 	<script type="text/javascript" src="underscore.js"></script>
     <script type="text/javascript" src="words.js"></script>
 <!--    <script type="text/javascript" src="todo.js"></script> -->
@@ -29,46 +29,52 @@
 </div>
 -->
 
-<div ng-controller="WordsCtrl" class="div-word">
-    <h2>Total Words Recognized: {{getFamiliarWords()}}</h2>
-    <form class="form-horizontal">
-        <input type="text" ng-model="formInputText" ng-model-instant>
-        <button class="btn" ng-click="addWords()"><i class="glyphicon-plus"></i> Add</button>
-    </form>
-    <table class="table-striped table-hover">
-        <tr ng-repeat="(word, value) in Words | limitTo:10">
-            <td><label class="RAN-{{value.RAN}}">
-                <input type="checkbox" ng-model="value.RAN">
-                &emsp;{{word}}&emsp;
-            </label><td/>
-            <td>&emsp;{{value.encounters}}&emsp;</td>
-        </tr>
-    </table>
-</div>
-
-<div ng-controller="addBooksCtrl" class="div-book">
-    <h3>Adding <strong><big>{{addBookTitle}}</big></strong> by <strong><big>{{addBookAuthor}}</big></strong></h3>
-    <form>
-        <label><input type="text" ng-model="addBookTitle" ng-model-instant placeholder="The Jungle Book"> Title</label><br/>
-        <label><input type="text" ng-model="addBookAuthor" ng-model-instant placeholder="Rudyard Kipling"> Author</label><br/>
-        <label><input type="num" ng-model="addBookYear" placeholder="1894"> Year Published</label><br/>
-        <label><input type="text" ng-model="addBookPublisher" placeholder="Macmillan Publishers"> Publisher</label><br/>
-        <label><input type="radio" ng-model="addBookRead" value="Fluent"> My child can read this book fluently</label><br/>
-        <label><input type="radio" ng-model="addBookRead" value="Read"> My child has read this book, but not fluently</label><br/>
-        <label><input type="radio" ng-model="addBookRead" value="Unread"> My child has not read this book</label><br/>
-        <label>
-            <textarea ng-model="addBookText" class="addBookText" 
-                placeholder="Type the text of the book here. Don't worry about punctuation or capitalization because only the word frequency is stored, not the formatting.">
-            </textarea>
-        </label><br/>
-        <button class="btn btn-addBook" ng-click="addBook()"><i class="glyphicon-plus"></i> Add</button>
-    </form>
-</div>
-
-<!--
-<div ng-controller="LibraryCtrl">
-    
-</div> -->
-
+    <div ng-controller="WordsCtrl">
+        <div class="div-word">
+            <h2>Total Words Recognized: {{getFamiliarWords()}}</h2>
+            <form class="form-horizontal">
+                <input type="text" ng-model="formInputText" ng-model-instant>
+                <button class="btn" ng-click="addWords()"><i class="glyphicon-plus"></i> Add</button>
+            </form>
+            <table class="table-striped table-hover">
+                <tr ng-repeat="(word, value) in Words">
+                    <td><label class="RAN-{{value.RAN}}">
+                        <input type="checkbox" ng-model="value.RAN">
+                        &emsp;{{word}}&emsp;
+                        </label><td/>
+                    <td>&emsp;{{value.encounters}}&emsp;</td>
+                </tr>
+            </table>
+        </div>
+        <div class="div-library">
+            <h2>Book Recommendations <small>(Words Recognized / Word Count)</small></h2>
+            <table class="table-striped table-hover">
+                <tr ng-repeat="recommended in bookRecommendations">
+                    <td>&emsp;<strong>{{recommended.book.title}}</strong>,&emsp;by {{recommended.book.author}}&emsp;</td>
+                    <td>&emsp;{{recommended.score}}%&emsp;</td>
+                </tr>
+            </table>
+            <button class="btn" ng-click="showRecommendations()">Update Recommendations</button> 
+        </div>
+        <div class="div-book">
+            <h2>Add a Book to Library</h2>
+            <h3>Adding <strong><big>{{addBookTitle}}</big></strong> by <strong><big>{{addBookAuthor}}</big></strong></h3>
+            <form>
+                <label><input type="text" ng-model="addBookTitle" ng-model-instant placeholder="The Jungle Book"> Title</label><br/>
+                <label><input type="text" ng-model="addBookAuthor" ng-model-instant placeholder="Rudyard Kipling"> Author</label><br/>
+                <label><input type="num" ng-model="addBookYear" placeholder="1894"> Year Published</label><br/>
+                <label><input type="text" ng-model="addBookPublisher" placeholder="Macmillan Publishers"> Publisher</label><br/>
+                <label><input type="radio" ng-model="addBookRead" value="Fluent"> My child can read this book fluently</label><br/>
+                <label><input type="radio" ng-model="addBookRead" value="Read"> My child has read this book, but not fluently</label><br/>
+                <label><input type="radio" ng-model="addBookRead" value="Unread"> My child has not read this book</label><br/>
+                <label>
+                    <textarea ng-model="addBookText" class="addBookText" 
+                              placeholder="Type the text of the book here. Don't worry about punctuation or capitalization because only the word frequency is stored, not the formatting.">
+                    </textarea>
+                </label><br/>
+                <button class="btn btn-addBook" ng-click="addBook()"><i class="glyphicon-plus"></i> Add</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

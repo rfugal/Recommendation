@@ -1,32 +1,33 @@
 function WordsCtrl($scope) {
     
-    if (localStorage.getItem('SaraWordModel') != null) {
-        $scope.Words = angular.fromJson(localStorage.getItem('SaraWordModel'));
+    $scope.Words = {};
+    if (window.localStorage.getItem('SaraWordModel') != null) {
+        $scope.Words = angular.fromJson(window.localStorage.getItem('SaraWordModel'));
     } else {
         $scope.Words = {
             'this': {RAN:true, encounters:0},
             'is': {RAN:true, encounters:0},
-            'sara': {RAN:true, encounters:0},
+            'sara': {RAN:false, encounters:0},
             'and': {RAN:true, encounters:0},
             'can': {RAN:true, encounters:0},
-            'read': {RAN:true, encounters:0},
+            'read': {RAN:false, encounters:0},
             'the': {RAN:true, encounters:0},
-            'book': {RAN:true, encounters:0},
+            'book': {RAN:false, encounters:0},
             'to': {RAN:true, encounters:0},
             'mom': {RAN:true, encounters:0},
             'a': {RAN:true, encounters:0},
             'of': {RAN:true, encounters:0},
-            'poems': {RAN:true, encounters:0},
+            'poems': {RAN:false, encounters:0},
             'in': {RAN:true, encounters:0},
             'bed': {RAN:true, encounters:0},
             'have': {RAN:true, encounters:0},
             'her': {RAN:true, encounters:0},
-            'own': {RAN:true, encounters:0},
+            'own': {RAN:false, encounters:0},
             'be': {RAN:true, encounters:0},
             'i': {RAN:true, encounters:0},
             'you': {RAN:true, encounters:0},
             'it': {RAN:true, encounters:0},
-            'something': {RAN:true, encounters:0},
+            'something': {RAN:false, encounters:0},
             'do': {RAN:true, encounters:0},
             'if': {RAN:true, encounters:0},
             'that': {RAN:true, encounters:0},
@@ -37,15 +38,15 @@ function WordsCtrl($scope) {
             'up': {RAN:true, encounters:0},
             'on': {RAN:true, encounters:0},
             'your': {RAN:true, encounters:0},
-            'knee': {RAN:true, encounters:0},
+            'knee': {RAN:false, encounters:0},
             'how': {RAN:true, encounters:0},
             'say': {RAN:true, encounters:0},
-            'soon': {RAN:true, encounters:0},
+            'soon': {RAN:false, encounters:0},
             'am': {RAN:true, encounters:0},
-            'reading': {RAN:true, encounters:0},
+            'reading': {RAN:false, encounters:0},
             'my': {RAN:true, encounters:0}
         };
-        localStorage.setItem('SaraWordModel', angular.toJson($scope.Words));
+        window.localStorage.setItem('SaraWordModel', angular.toJson($scope.Words));
     };
     
     $scope.getFamiliarWords = function () {
@@ -53,13 +54,12 @@ function WordsCtrl($scope) {
         for (w in $scope.Words) {
             if ($scope.Words[w].RAN == true) {RANcount++};
         };
+        window.localStorage.setItem('SaraWordModel', angular.toJson($scope.Words));
         return RANcount;
     };
-    
-    
+        
     $scope.addWords = function () {
         var newWords = $scope.formInputText.toLowerCase().match(/\b[A-z']+/gi);
-        $scope.Words = angular.fromJson(localStorage.getItem('SaraWordModel'));
         $scope.formInputText = '';
         for (i=0; i<newWords.length; i++) {
             if ($scope.Words[newWords[i]] === undefined) {
@@ -71,25 +71,91 @@ function WordsCtrl($scope) {
                 };
             };
         };
-        localStorage.setItem('SaraWordModel', angular.toJson($scope.Words));
+        delete $scope.Words['then'];
+        window.localStorage.setItem('SaraWordModel', angular.toJson($scope.Words));
     };
-}
 
-var bookLibrary = {};
+    var bookLibrary = {};
 
-if (localStorage.getItem('SaraBookLibrary') != null) {
-    bookLibrary = angular.fromJson(localStorage.getItem('SaraBookLibrary'));
-};
+    if (window.localStorage.getItem('SaraBookLibrary') != null) {
+        bookLibrary = JSON.parse(window.localStorage.getItem('SaraBookLibrary'));
+    } else {
+        bookLibrary = {
+            "fugal2016i":{
+                "title":"I Can Read a Book to You",
+                "author":"Russ Fugal",
+                "year":"2016",
+                "publisher":"sara.ai books",
+                "words":{
+                    "i":6,
+                    "can":2,
+                    "read":3,
+                    "a":1,
+                    "book":2,
+                    "to":1,
+                    "you":4,
+                    "it":1,
+                    "is":2,
+                    "something":1,
+                    "do":2,
+                    "if":1,
+                    "that":1,
+                    "with":2,
+                    "me":1,
+                    "will":1,
+                    "sit":1,
+                    "up":1,
+                    "on":2,
+                    "your":1,
+                    "knee":1,
+                    "and":2,
+                    "this":3,
+                    "how":1,
+                    "say":1,
+                    "soon":1,
+                    "am":1,
+                    "reading":1,
+                    "my":1,
+                    "own":1
+                }
+            },"fugal2016primer":{
+                "title":"Primer",
+                "author":"Russ Fugal",
+                "year":"2016",
+                "publisher":"sara.ai books",
+                "words":{
+                    "sara":8,
+                    "this":1,
+                    "is":1,
+                    "and":2,
+                    "can":7,
+                    "read":5,
+                    "the":4,
+                    "book":6,
+                    "to":1,
+                    "mom":1,
+                    "a":2,
+                    "of":2,
+                    "poems":1,
+                    "in":1,
+                    "bed":1,
+                    "have":1,
+                    "her":1,
+                    "own":2,
+                    "be":1,
+                    "sara's":1}
+            }
+        };
+    };
 
-function addBooksCtrl($scope) {
-    $scope.addBookRead = "Read";
+    $scope.addBookRead = "Unread";
     $scope.newBookWords = [];
     $scope.addBook = function () {
         $scope.newBookWords = $scope.addBookText.toLowerCase().match(/\b[A-z']+/gi);
-        alert($scope.newBookWords)
-        $scope.newBookWords = _.countBy($scope.newBookWords, function(w) {
-            return w;
+        $scope.newBookWords = _.countBy($scope.newBookWords, function(word) {
+            return word;
         });
+        delete $scope.newBookWords['then'];
         var bookName = $scope.addBookAuthor.toLowerCase().match(/\b[A-z']+/gi);
         bookName = bookName[bookName.length-1]+$scope.addBookYear+$scope.addBookTitle.toLowerCase().match(/\b[A-z']+/gi)[0];
         bookLibrary[bookName] = {
@@ -99,31 +165,30 @@ function addBooksCtrl($scope) {
             publisher: $scope.addBookPublisher,
             words: $scope.newBookWords
         };
-        localStorage.setItem('SaraBookLibrary', angular.toJson(bookLibrary));
+        window.localStorage.setItem('SaraBookLibrary', JSON.stringify(bookLibrary));
         
         if ($scope.addBookRead != "Unread") {
-            var wordModel = angular.fromJson(localStorage.getItem('SaraWordModel'));
             //add 1 encounter to each word
             for (word in $scope.newBookWords) {
-                if (wordModel[word] === undefined) {
-                    wordModel[word] = {RAN:false, encounters: 1};
+                if ($scope.Words[word] === undefined) {
+                    if ($scope.addBookRead == "Fluent") {
+                        $scope.Words[word] = {RAN:true, encounters: $scope.newBookWords[word]};
+                    } else {
+                        $scope.Words[word] = {RAN:false, encounters: $scope.newBookWords[word]};
+                    };
                 } else {
-                    wordModel[word].encounters++;
-                };
-            }
-            if ($scope.addBookRead == "Fluent") {
-                for (word in $scope.newBookWords) {
-                    wordModel[word].RAN = true;
-                };
-            } else if ($scope.addBookRead == "Read") {
-                //make words with > 3 encounters RAN:true
-                for (word in $scope.newBookWords) {
-                    if (wordModel[word].encounters > 3) {
-                        wordModel[word].RAN = true;
+                    $scope.Words[word].encounters += $scope.newBookWords[word];
+                    if ($scope.addBookRead == "Fluent") {
+                        $scope.Words[word].RAN = true;
+                    } else {
+                        //make words with > 5 encounters RAN:true
+                        if ($scope.Words[word].encounters > 5) {
+                            $scope.Words[word].RAN = true;
+                        };
                     };
                 };
             };
-            localStorage.setItem('SaraWordModel', angular.toJson(wordModel));
+            window.localStorage.setItem('SaraWordModel', angular.toJson($scope.Words));
         };
         
         $scope.addBookText = '';
@@ -133,4 +198,35 @@ function addBooksCtrl($scope) {
         $scope.addBookPublisher = '';
         
     };
+    
+    $scope.showRecommendations = function () {
+        $scope.bookRecommendations = [];
+        for (var book in bookLibrary) {
+            var bookScore = scoreBook(bookLibrary[book], $scope.Words);
+            if (bookScore > 50 && bookScore < 100) {
+                $scope.bookRecommendations.push({'score':bookScore, 'book':bookLibrary[book]});
+            };
+        };
+        $scope.bookRecommendations = _.sortBy($scope.bookRecommendations, 'score');
+        if ($scope.bookRecommendations.length > 5) {
+            $scope.bookRecommendations = $scope.bookRecommendations; //trim to ideal
+        };
+    };
+    $scope.showRecommendations();
+}
+
+function scoreBook (book, wordMap) {
+    var bookScore = 0;
+    var bookWordCount = 0;
+    for (var word in book.words) {
+        var wordCount = book.words[word];
+        bookWordCount += wordCount;
+        if (wordMap[word]) {
+            if (wordMap[word].RAN){
+                bookScore += wordCount;
+            }
+        };
+    };
+    bookScore = (bookScore / bookWordCount).toFixed(2) * 100;
+    return bookScore;
 }
