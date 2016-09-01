@@ -81,7 +81,7 @@ function WordsCtrl($scope) {
         bookLibrary = JSON.parse(window.localStorage.getItem('SaraBookLibrary'));
     } else {
         bookLibrary = {
-            "fugal2016i":{
+            "fugal2016ICanRead":{
                 "title":"I Can Read a Book to You",
                 "author":"Russ Fugal",
                 "year":"2016",
@@ -118,7 +118,7 @@ function WordsCtrl($scope) {
                     "my":1,
                     "own":1
                 }
-            },"fugal2016primer":{
+            },"fugal2016Primer":{
                 "title":"Primer",
                 "author":"Russ Fugal",
                 "year":"2016",
@@ -151,13 +151,17 @@ function WordsCtrl($scope) {
     $scope.addBookRead = "Unread";
     $scope.newBookWords = [];
     $scope.addBook = function () {
+        if ($scope.addBookTitle == '') {alert('please add a book title'); return;}
+        if ($scope.addBookAuthor == '') {alert('please add a book author'); return;}
+        if ($scope.addBookYear == '') {alert('please add a book year'); return;}
+        if ($scope.addBookText == '') {alert('please add a book text'); return;}
         $scope.newBookWords = $scope.addBookText.toLowerCase().match(/\b[A-z']+/gi);
         $scope.newBookWords = _.countBy($scope.newBookWords, function(word) {
             return word;
         });
         delete $scope.newBookWords['then'];
         var bookName = $scope.addBookAuthor.toLowerCase().match(/\b[A-z']+/gi);
-        bookName = bookName[bookName.length-1]+$scope.addBookYear+$scope.addBookTitle.toLowerCase().match(/\b[A-z']+/gi)[0];
+        bookName = bookName[bookName.length-1]+$scope.addBookYear+$scope.addBookTitle.replace(/[^A-z]+/gi,'').substring(0,8);
         bookLibrary[bookName] = {
             title: $scope.addBookTitle,
             author: $scope.addBookAuthor,
@@ -227,6 +231,6 @@ function scoreBook (book, wordMap) {
             }
         };
     };
-    bookScore = (bookScore / bookWordCount).toFixed(2) * 100;
+    bookScore = (bookScore / bookWordCount * 100).toFixed(0);
     return bookScore;
 }

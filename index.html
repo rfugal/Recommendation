@@ -33,10 +33,11 @@
         <div class="div-word">
             <h2>Total Words Recognized: {{getFamiliarWords()}}</h2>
             <form class="form-horizontal">
-                <input type="text" ng-model="formInputText" ng-model-instant>
+                <input type="text" ng-model="formInputText" ng-model-instant placeholder="type 1 of more words">
                 <button class="btn" ng-click="addWords()"><i class="glyphicon-plus"></i> Add</button>
             </form>
             <table class="table-striped table-hover">
+                <tr><strong>Checked Words are Recognized</strong></tr>
                 <tr ng-repeat="(word, value) in Words">
                     <td><label class="RAN-{{value.RAN}}">
                         <input type="checkbox" ng-model="value.RAN">
@@ -54,10 +55,11 @@
                     <td>&emsp;{{recommended.score}}%&emsp;</td>
                 </tr>
             </table>
-            <button class="btn" ng-click="showRecommendations()">Update Recommendations</button> 
         </div>
+        <button class="btn" ng-click="showRecommendations()">Update Recommendations</button> 
         <div class="div-book">
             <h2>Add a Book to Library</h2>
+            <small><em>add a book to see if it's recommended,<br/>or to add recognized words to the model</em></small>
             <h3>Adding <strong><big>{{addBookTitle}}</big></strong> by <strong><big>{{addBookAuthor}}</big></strong></h3>
             <form>
                 <label><input type="text" ng-model="addBookTitle" ng-model-instant placeholder="The Jungle Book"> Title</label><br/>
