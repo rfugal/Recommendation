@@ -1,3 +1,4 @@
+//Copyright 2016 Sara.AI, Inc. Patent Pending Recognized Word Model to Recommendation
 function WordsCtrl($scope) {
     
     $scope.Words = {};
@@ -220,7 +221,7 @@ function postBook(bookName, book) {
             window.localStorage.setItem('SaraUserEmail', email);
         };
         jQuery.ajax({
-            url: "addLibrary.php",
+            url: "./addLibrary.php",
             data: {
                 'email' : email,
                 'bookName' : bookName,
@@ -230,29 +231,4 @@ function postBook(bookName, book) {
             dataType: "xml"
         });
     };
-    
-//    if (window.localStorage.getItem('SaraUserEmail') != null) {email = window.localStorage.getItem('SaraUserEmail');}
-//    jQuery.ajax({
-//        //url: "https://docs.google.com/spreadsheet/formResponse",
-//        url: "https://docs.google.com/forms/d/1FAIpQLSfdHJwUahaZO4s7qpeVzVh4ziHdkkdPXHhFTVYOJelVOXGUyA/formResponse",
-//        beforeSend: function (xhr) {
-//            xhr.setRequestHeader('Access-Control-Allow-Origin', 'chrome-extension://EXTENSION_ID');
-//            xhr.setRequestHeader('Access-Control-Allow-Methods', 'GET, POST, PUT');
-//        },
-//        https://docs.google.com/forms/d/e/1FAIpQLSfdHJwUahaZO4s7qpeVzVh4ziHdkkdPXHhFTVYOJelVOXGUyA/viewform?entry.863364237=fugal2016Primer&entry.2143231644=Primer&entry.1323807687=Russ+Fugal&entry.1690708978=2016&entry.1857773525=sara.ai+books&entry.1909702335=%7B'word':2%7D&entry.930359825
-//        data: {
-//            "entry.863364237" : bookName, 
-//            "entry.2143231644" : book.title,
-//            "entry.1323807687" : book.author,
-//            "entry.1690708978" : book.year,
-//            "entry.1857773525" : book.publisher,
-//            "entry.1909702335" : angular.toJson(book.words),
-//            "entry.930359825" : email
-//        },
-//        type: "POST",
-//        dataType: "xml"
-//        xhrFields: {
-//            withCredentials: true
-//        }
-//    });
 }
