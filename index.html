@@ -2,7 +2,9 @@
 <html ng-app>
 <head>
 	<script type="text/javascript" src="angular/angular-1.0.0rc3.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 	<script type="text/javascript" src="underscore.js"></script>
+    <script type="text/javascript" src="bookLibrary.js"></script>
     <script type="text/javascript" src="words.js"></script>
 <!--    <script type="text/javascript" src="todo.js"></script> -->
     <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
@@ -29,9 +31,11 @@
 </div>
 -->
 
+    <p>Copyright 2016, Sara.AI &mdash; Patent Pending</p>
     <div ng-controller="WordsCtrl">
         <div class="div-word">
             <h2>Total Words Recognized: {{getFamiliarWords()}}</h2>
+            <p>After a sufficient number of encounters a word become recognizable without effort. This fluency is called <a href="https://www.google.com/#q=rapid+automatized+naming" target="_blank">rapid automatized naming</a>. The list below should closely reflect all the words which your child can fluently read. You may update it as desired.</p>
             <form class="form-horizontal">
                 <input type="text" ng-model="formInputText" ng-model-instant placeholder="type 1 of more words">
                 <button class="btn" ng-click="addWords()"><i class="glyphicon-plus"></i> Add</button>
@@ -48,18 +52,32 @@
             </table>
         </div>
         <div class="div-library">
-            <h2>Book Recommendations <small>(Words Recognized / Word Count)</small></h2>
-            <table class="table-striped table-hover">
-                <tr ng-repeat="recommended in bookRecommendations">
-                    <td>&emsp;<strong>{{recommended.book.title}}</strong>,&emsp;by {{recommended.book.author}}&emsp;</td>
-                    <td>&emsp;{{recommended.score}}%&emsp;</td>
-                </tr>
-            </table>
+            <h2>Book Recommendations</h2>
+            <p>Reading books with a high ratio of fluently recognized words promotes comprehension and confindence, and results in more engaged reading. </p>
+            <p>Recommendation Ratio, Words Familiar / Total Word Count
+            <br/>
+            <label>Upper Limit: {{recommendationUpperLimit}}%<br/>
+                <input type="range" min="95" max="100" step="1" ng-model="recommendationUpperLimit" ng-model-instant></label>
+            <br/>
+            <label>Lower Limit: {{recommendationLowerLimit}}%<br/>
+                <input type="range" min="25" max="95" step="5" ng-model="recommendationLowerLimit" ng-model-instant></label>
+            </p>
+            <button class="btn" ng-click="showRecommendations()">Update Recommendations</button> 
+            <div style="padding-top: 25px">
+                <table class="table-striped table-hover">
+                    <tr ng-repeat="recommended in bookRecommendations">
+                        <td>&emsp;<strong>{{recommended.book.title}}</strong>,&emsp;by {{recommended.book.author}}&emsp;</td>
+                        <td>&emsp;{{recommended.score}}%&emsp;</td>
+                        <td>&emsp;<button class="btn badge" ng-click="readOnce(recommended.book.words, recommended.book.title)"><i class="glyphicon-plus"></i></button></td>
+                        <td>&emsp;<button class="btn badge" ng-click="readFluent(recommended.book.words, recommended.book.title)">Fluent</button></td>
+                    </tr>
+                </table>
+            </div>
         </div>
-        <button class="btn" ng-click="showRecommendations()">Update Recommendations</button> 
         <div class="div-book">
             <h2>Add a Book to Library</h2>
-            <small><em>add a book to see if it's recommended,<br/>or to add recognized words to the model</em></small>
+            <p><em>add a book to see if it's recommended,<br/>or to add recognized words to the model</em></p>
+            <p>We are adding books the the library regularly, but you can build your own library with this tool.</p>
             <h3>Adding <strong><big>{{addBookTitle}}</big></strong> by <strong><big>{{addBookAuthor}}</big></strong></h3>
             <form>
                 <label><input type="text" ng-model="addBookTitle" ng-model-instant placeholder="The Jungle Book"> Title</label><br/>

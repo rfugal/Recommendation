@@ -66,7 +66,7 @@ function WordsCtrl($scope) {
                 $scope.Words[newWords[i]] = {RAN:true, encounters: 1};
             } else {
                 $scope.Words[newWords[i]].encounters++;
-                if ($scope.Words[newWords[i]].encounters > 3) {
+                if ($scope.Words[newWords[i]].encounters > 10) {
                     $scope.Words[newWords[i]].RAN = true;
                 };
             };
@@ -74,80 +74,52 @@ function WordsCtrl($scope) {
         delete $scope.Words['then'];
         window.localStorage.setItem('SaraWordModel', angular.toJson($scope.Words));
     };
+    
+    $scope.readFluent = function (bookWords, title) {
+        if (confirm("Add fluent reading of " + title)) {
+            for (var word in bookWords) {
+                if ($scope.Words[word] === undefined) {
+                    $scope.Words[word] = {RAN:true, encounters: bookWords[word]};
+                } else {
+                    $scope.Words[word].encounters += bookWords[word];
+                    $scope.Words[word].RAN = true;
+                };
+            };
+        };
+        delete $scope.Words['then'];
+        window.localStorage.setItem('SaraWordModel', angular.toJson($scope.Words));
+    }
+    $scope.readOnce = function (bookWords, title) {
+        if (confirm("Add one reading of " + title)) {
+            for (var word in bookWords) {
+                if ($scope.Words[word] === undefined) {
+                    $scope.Words[word] = {RAN:false, encounters: bookWords[word]};
+                } else {
+                    $scope.Words[word].encounters += bookWords[word];
+                    if ($scope.Words[word].encounters > 10) {
+                        $scope.Words[word].RAN = true;
+                    };
+                };
+            };
+        };
+        delete $scope.Words['then'];
+        window.localStorage.setItem('SaraWordModel', angular.toJson($scope.Words));
+    }
 
     var bookLibrary = {};
 
     if (window.localStorage.getItem('SaraBookLibrary') != null) {
         bookLibrary = JSON.parse(window.localStorage.getItem('SaraBookLibrary'));
-    } else {
-        bookLibrary = {
-            "fugal2016ICanRead":{
-                "title":"I Can Read a Book to You",
-                "author":"Russ Fugal",
-                "year":"2016",
-                "publisher":"sara.ai books",
-                "words":{
-                    "i":6,
-                    "can":2,
-                    "read":3,
-                    "a":1,
-                    "book":2,
-                    "to":1,
-                    "you":4,
-                    "it":1,
-                    "is":2,
-                    "something":1,
-                    "do":2,
-                    "if":1,
-                    "that":1,
-                    "with":2,
-                    "me":1,
-                    "will":1,
-                    "sit":1,
-                    "up":1,
-                    "on":2,
-                    "your":1,
-                    "knee":1,
-                    "and":2,
-                    "this":3,
-                    "how":1,
-                    "say":1,
-                    "soon":1,
-                    "am":1,
-                    "reading":1,
-                    "my":1,
-                    "own":1
-                }
-            },"fugal2016Primer":{
-                "title":"Primer",
-                "author":"Russ Fugal",
-                "year":"2016",
-                "publisher":"sara.ai books",
-                "words":{
-                    "sara":8,
-                    "this":1,
-                    "is":1,
-                    "and":2,
-                    "can":7,
-                    "read":5,
-                    "the":4,
-                    "book":6,
-                    "to":1,
-                    "mom":1,
-                    "a":2,
-                    "of":2,
-                    "poems":1,
-                    "in":1,
-                    "bed":1,
-                    "have":1,
-                    "her":1,
-                    "own":2,
-                    "be":1,
-                    "sara's":1}
-            }
+        for (addition in addToLibrary) {
+            if (bookLibrary[addition] == null) {
+                bookLibrary[addition] = addToLibrary[addition];
+            };
         };
+        window.localStorage.setItem('SaraBookLibrary', JSON.stringify(bookLibrary));
+    } else {
+        bookLibrary = addToLibrary;
     };
-
+    
     $scope.addBookRead = "Unread";
     $scope.newBookWords = [];
     $scope.addBook = function () {
@@ -169,6 +141,7 @@ function WordsCtrl($scope) {
             publisher: $scope.addBookPublisher,
             words: $scope.newBookWords
         };
+        postBook(bookName, bookLibrary[bookName]);
         window.localStorage.setItem('SaraBookLibrary', JSON.stringify(bookLibrary));
         
         if ($scope.addBookRead != "Unread") {
@@ -203,11 +176,13 @@ function WordsCtrl($scope) {
         
     };
     
+    $scope.recommendationUpperLimit = 100;
+    $scope.recommendationLowerLimit = 60;
     $scope.showRecommendations = function () {
         $scope.bookRecommendations = [];
         for (var book in bookLibrary) {
             var bookScore = scoreBook(bookLibrary[book], $scope.Words);
-            if (bookScore > 50 && bookScore < 100) {
+            if (bookScore >= $scope.recommendationLowerLimit && bookScore <= $scope.recommendationUpperLimit) {
                 $scope.bookRecommendations.push({'score':bookScore, 'book':bookLibrary[book]});
             };
         };
@@ -231,6 +206,53 @@ function scoreBook (book, wordMap) {
             }
         };
     };
-    bookScore = (bookScore / bookWordCount * 100).toFixed(0);
+    bookScore = Number((bookScore / bookWordCount * 100).toFixed(0));
     return bookScore;
+}
+
+function postBook(bookName, book) {
+    if (confirm(book.title + " has been added you your library. Would you help the community and share this with us so we can include it in the global library?")) {
+        var email = "";
+        if (window.localStorage.getItem('SaraUserEmail') != null) {
+            email = window.localStorage.getItem('SaraUserEmail');
+        } else {
+            email = prompt("Please enter your email: ");
+            window.localStorage.setItem('SaraUserEmail', email);
+        };
+        jQuery.ajax({
+            url: "addLibrary.php",
+            data: {
+                'email' : email,
+                'bookName' : bookName,
+                'bookJson' : angular.toJson(book)
+            },
+            type: "POST",
+            dataType: "xml"
+        });
+    };
+    
+//    if (window.localStorage.getItem('SaraUserEmail') != null) {email = window.localStorage.getItem('SaraUserEmail');}
+//    jQuery.ajax({
+//        //url: "https://docs.google.com/spreadsheet/formResponse",
+//        url: "https://docs.google.com/forms/d/1FAIpQLSfdHJwUahaZO4s7qpeVzVh4ziHdkkdPXHhFTVYOJelVOXGUyA/formResponse",
+//        beforeSend: function (xhr) {
+//            xhr.setRequestHeader('Access-Control-Allow-Origin', 'chrome-extension://EXTENSION_ID');
+//            xhr.setRequestHeader('Access-Control-Allow-Methods', 'GET, POST, PUT');
+//        },
+//        https://docs.google.com/forms/d/e/1FAIpQLSfdHJwUahaZO4s7qpeVzVh4ziHdkkdPXHhFTVYOJelVOXGUyA/viewform?entry.863364237=fugal2016Primer&entry.2143231644=Primer&entry.1323807687=Russ+Fugal&entry.1690708978=2016&entry.1857773525=sara.ai+books&entry.1909702335=%7B'word':2%7D&entry.930359825
+//        data: {
+//            "entry.863364237" : bookName, 
+//            "entry.2143231644" : book.title,
+//            "entry.1323807687" : book.author,
+//            "entry.1690708978" : book.year,
+//            "entry.1857773525" : book.publisher,
+//            "entry.1909702335" : angular.toJson(book.words),
+//            "entry.930359825" : email
+//        },
+//        type: "POST",
+//        dataType: "xml"
+//        xhrFields: {
+//            withCredentials: true
+//        }
+//    });
 }
