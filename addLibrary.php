@@ -1,9 +1,8 @@
 <?php
-$filename = "./newBooks/".$_POST["bookName"].".json";
+$filename = "./newBooks/fugal2016Test.json";
 $myfile = fopen($filename, "a") or die("Unable to open file!");
-$txt = $_POST["email"]."\n";
+$txt = $_POST["email"]."\n\t".'"'.$_POST["bookName"].'":'."\n".$_POST["bookJson"].",\n";
 fwrite ($myfile, $txt);
-$txt = $_POST["bookJson"]."\n";
-fwrite($myfile, $txt);
 fclose($myfile);
+chmod($myfile,0000);
 ?>

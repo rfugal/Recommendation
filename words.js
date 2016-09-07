@@ -136,6 +136,7 @@ function WordsCtrl($scope) {
         var bookName = $scope.addBookAuthor.toLowerCase().match(/\b[A-z']+/gi);
         bookName = bookName[bookName.length-1]+$scope.addBookYear+$scope.addBookTitle.replace(/[^A-z]+/gi,'').substring(0,8);
         bookLibrary[bookName] = {
+            link: "",
             title: $scope.addBookTitle,
             author: $scope.addBookAuthor,
             year: $scope.addBookYear,
