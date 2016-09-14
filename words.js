@@ -1,6 +1,7 @@
 //Copyright 2016 Sara.AI, Inc. Patent Pending Recognized Word Model to Recommendation
 function WordsCtrl($scope) {
     
+    
     $scope.Words = {};
     if (window.localStorage.getItem('SaraWordModel') != null) {
         $scope.Words = angular.fromJson(window.localStorage.getItem('SaraWordModel'));
@@ -15,14 +16,14 @@ function WordsCtrl($scope) {
             'the': {RAN:true, encounters:0},
             'book': {RAN:false, encounters:0},
             'to': {RAN:true, encounters:0},
-            'mom': {RAN:true, encounters:0},
+            'mom': {RAN:false, encounters:0},
             'a': {RAN:true, encounters:0},
             'of': {RAN:true, encounters:0},
             'poems': {RAN:false, encounters:0},
             'in': {RAN:true, encounters:0},
-            'bed': {RAN:true, encounters:0},
+            'bed': {RAN:false, encounters:0},
             'have': {RAN:true, encounters:0},
-            'her': {RAN:true, encounters:0},
+            'her': {RAN:false, encounters:0},
             'own': {RAN:false, encounters:0},
             'be': {RAN:true, encounters:0},
             'i': {RAN:true, encounters:0},
@@ -35,13 +36,13 @@ function WordsCtrl($scope) {
             'with': {RAN:true, encounters:0},
             'me': {RAN:true, encounters:0},
             'will': {RAN:true, encounters:0},
-            'sit': {RAN:true, encounters:0},
+            'sit': {RAN:false, encounters:0},
             'up': {RAN:true, encounters:0},
             'on': {RAN:true, encounters:0},
-            'your': {RAN:true, encounters:0},
+            'your': {RAN:false, encounters:0},
             'knee': {RAN:false, encounters:0},
             'how': {RAN:true, encounters:0},
-            'say': {RAN:true, encounters:0},
+            'say': {RAN:false, encounters:0},
             'soon': {RAN:false, encounters:0},
             'am': {RAN:true, encounters:0},
             'reading': {RAN:false, encounters:0},
@@ -179,7 +180,7 @@ function WordsCtrl($scope) {
     };
     
     $scope.recommendationUpperLimit = 100;
-    $scope.recommendationLowerLimit = 60;
+    $scope.recommendationLowerLimit = 45;
     $scope.showRecommendations = function () {
         $scope.bookRecommendations = [];
         for (var book in bookLibrary) {
@@ -194,6 +195,57 @@ function WordsCtrl($scope) {
         };
     };
     $scope.showRecommendations();
+
+    $scope.reset = function () {
+        if (confirm("Resetting will unrecoverably clear the list of recognized words and reset it to the default. \nManually added books will also be removed from the library. \nAre you sure you want to proceed?")) {
+            $scope.Words = {
+            'this': {RAN:true, encounters:0},
+            'is': {RAN:true, encounters:0},
+            'sara': {RAN:false, encounters:0},
+            'and': {RAN:true, encounters:0},
+            'can': {RAN:true, encounters:0},
+            'read': {RAN:false, encounters:0},
+            'the': {RAN:true, encounters:0},
+            'book': {RAN:false, encounters:0},
+            'to': {RAN:true, encounters:0},
+            'mom': {RAN:false, encounters:0},
+            'a': {RAN:true, encounters:0},
+            'of': {RAN:true, encounters:0},
+            'poems': {RAN:false, encounters:0},
+            'in': {RAN:true, encounters:0},
+            'bed': {RAN:false, encounters:0},
+            'have': {RAN:true, encounters:0},
+            'her': {RAN:false, encounters:0},
+            'own': {RAN:false, encounters:0},
+            'be': {RAN:true, encounters:0},
+            'i': {RAN:true, encounters:0},
+            'you': {RAN:true, encounters:0},
+            'it': {RAN:true, encounters:0},
+            'something': {RAN:false, encounters:0},
+            'do': {RAN:true, encounters:0},
+            'if': {RAN:true, encounters:0},
+            'that': {RAN:true, encounters:0},
+            'with': {RAN:true, encounters:0},
+            'me': {RAN:true, encounters:0},
+            'will': {RAN:true, encounters:0},
+            'sit': {RAN:false, encounters:0},
+            'up': {RAN:true, encounters:0},
+            'on': {RAN:true, encounters:0},
+            'your': {RAN:false, encounters:0},
+            'knee': {RAN:false, encounters:0},
+            'how': {RAN:true, encounters:0},
+            'say': {RAN:false, encounters:0},
+            'soon': {RAN:false, encounters:0},
+            'am': {RAN:true, encounters:0},
+            'reading': {RAN:false, encounters:0},
+            'my': {RAN:true, encounters:0}
+            };
+            window.localStorage.setItem('SaraWordModel', angular.toJson($scope.Words));
+            bookLibrary = {};
+            window.localStorage.setItem('SaraBookLibrary', angular.toJson(bookLibrary));
+            location.reload(true);
+        };
+    }
 }
 
 function scoreBook (book, wordMap) {
