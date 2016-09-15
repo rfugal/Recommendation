@@ -1,16 +1,42 @@
 <!doctype html>
 <html ng-app>
 <head>
+    <meta charset="utf-8">
 	<script type="text/javascript" src="angular/angular-1.0.0rc3.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-	<script type="text/javascript" src="underscore.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="underscore.js"></script>
     <script type="text/javascript" src="bookLibrary.js"></script>
     <script type="text/javascript" src="words.js"></script>
     <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
     <link rel="stylesheet" href="words.css">    
 </head>
 <body>
-    <p>Copyright 2016, Sara.AI &mdash; Patent Pending</p>
+    <p>Copyright 2016, Sara.AI &mdash; Patent Pending. 
+        <!-- Trigger the modal with a button -->
+        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">
+            Click Me For An Instructional Video
+        </button>
+    </p>
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Sara.AI Book Recommendation Webapp &mdash; "How To" Video</h4>
+                </div>
+                <div align="middle" class="modal-body">
+                    <iframe align="middle" width="400" height="300" frameborder="0" allowfullscreen="" src="https://www.youtube.com/embed/lifo2YhC9NM"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+            
+        </div>
+    </div>
     <div ng-controller="WordsCtrl">
         <div class="div-word">
             <h2>Total Words Recognized: {{getFamiliarWords()}}</h2>
