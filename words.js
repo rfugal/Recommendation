@@ -205,11 +205,28 @@ function WordsCtrl($scope) {
             location.reload(true);
         };
     }
-//    $("#myModal").on('shown.bs.modal', function () {
-//        var src = 'https://www.youtube.com/embed/4YVqgPETxjY';
-//        $('#myModal iframe').attr('src', src);
-//    });
     
+    $scope.showWords = function (bookWords, title) {
+        $scope.inspectionWords = {};
+        $scope.inspectionTitle = title;
+        for (word in bookWords) {
+            if ($scope.Words[word] == null) {
+                $scope.inspectionWords[word] = {RAN:false, encounters:0};
+            } else if ($scope.Words[word].RAN == false) {
+                $scope.inspectionWords[word] = $scope.Words[word];
+            };
+        };
+    }
+
+    $("#inspectionModal").on('hide.bs.modal', function () {
+        for (word in $scope.inspectionWords) {
+            if ($scope.inspectionWords[word].RAN) {
+                $scope.Words[word] = $scope.inspectionWords[word];
+            }
+        }
+        window.localStorage.setItem('SaraWordModel', angular.toJson($scope.Words));
+    });
+
     
     $("#myModal").on('hide.bs.modal', function () {
         $('#myModal iframe').attr("src",$('#myModal iframe').attr('src'))

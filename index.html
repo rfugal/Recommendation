@@ -74,6 +74,7 @@
                         <td>&emsp;{{recommended.score}}%&emsp;</td>
                         <td>&emsp;<button class="btn badge" ng-click="readOnce(recommended.book.words, recommended.book.title)"><i class="glyphicon-plus"></i></button></td>
                         <td>&emsp;<button class="btn badge" ng-click="readFluent(recommended.book.words, recommended.book.title)">Fluent</button></td>
+                        <td>&emsp;<button class="btn badge" ng-click="showWords(recommended.book.words, recommended.book.title)" data-toggle="modal" data-target="#inspectionModal">Inspect</button></td>
                     </tr>
                 </table>
             </div>
@@ -100,6 +101,34 @@
             </form>
         </div>
         <button class="btn" ng-click="reset()">Reset Account</button>
+        <div id="inspectionModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">{{inspectionTitle}} &mdash; Unfamiliar Words</h4>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table-striped table-hover">
+                            <tr><strong>Check Words which are Recognized</strong></tr>
+                            <tr ng-repeat="(word, value) in inspectionWords">
+                                <td>
+                                    <label class="RAN-{{value.RAN}}">
+                                        <input type="checkbox" ng-model="value.RAN">
+                                        &emsp;{{word}}&emsp;
+                                    </label>
+                                <td/>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
     </div>
     <script>
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
