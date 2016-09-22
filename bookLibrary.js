@@ -1,5 +1,5 @@
 var addToLibrary = {
-	"fugal2016ICanRead":{"link":"http://www.kickstarter.com/projects/nell/primer?ref=webappICanRead",
+	"fugal2016ICanRead":{"link":"https://www.amazon.com/dp/B01M0V7ZUL",
 		"title":"I Can Read a Book to You","author":"Russ Fugal","year":"2016","publisher":"sara.ai books","words":{"i":6,"can":2,"read":3,"a":1,"book":2,"to":1,"you":4,"it":1,"is":2,"something":1,"do":2,"if":1,"that":1,"with":2,"me":1,"will":1,"sit":1,"up":1,"on":2,"your":1,"knee":1,"and":2,"this":3,"how":1,"say":1,"soon":1,"am":1,"reading":1,"my":1,"own":1}},
 	"fugal2016Primer":{"link":"http://www.sara.ai/primer/?ref=webappPrimer",
 		"title":"Primer","author":"Russ Fugal","year":"2016","publisher":"sara.ai books","words":{"sara":8,"this":1,"is":1,"and":2,"can":7,"read":5,"the":4,"book":6,"to":1,"mom":1,"a":2,"of":2,"poems":1,"in":1,"bed":1,"have":1,"her":1,"own":2,"be":1,"sara's":1}},
