@@ -72,7 +72,7 @@
                     <tr ng-repeat="recommended in bookRecommendations">
                         <td>&emsp;<a href="{{recommended.book.link}}" target="_blank"><strong>{{recommended.book.title}}</strong></a>,&emsp;by {{recommended.book.author}}&emsp;</td>
                         <td>&emsp;{{recommended.score}}%&emsp;</td>
-                        <td>&emsp;{{recommended.difficulty}}%&emsp;</td>
+                        <td>&emsp;{{recommended.difficulty}}&emsp;</td>
                         <td>&emsp;<button class="btn badge" ng-click="readOnce(recommended.book.words, recommended.book.title)"><i class="glyphicon-plus"></i></button></td>
                         <td>&emsp;<button class="btn badge" ng-click="readFluent(recommended.book.words, recommended.book.title)">Fluent</button></td>
                         <td>&emsp;<button class="btn badge" ng-click="showWords(recommended.book.words, recommended.book.title)" data-toggle="modal" data-target="#inspectionModal">Inspect</button></td>

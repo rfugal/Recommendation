@@ -1,5 +1,3 @@
-//Copyright 2016 — Sara.AI, Inc.
-//All rights reserved. Patent Pending.
 <?php
 
 $firstQuartileFactor = 23;

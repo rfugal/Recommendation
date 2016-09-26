@@ -264,9 +264,9 @@ function scoreBook (book, wordMap) {
             },
             type: "POST",
             dataType: "xml"
-        }).done(function ( returnedScore ) {
+        }).done(function ( data ) {
             bookScore = Number((bookScore * 100).toFixed(0));
-            return {difficulty: returnedScore, percentage: bookScore};        
+            return {difficulty: data, percentage: bookScore};        
         });
     } else if (bookScore = 1) {
         return {difficulty: 0, percentage: 100};
