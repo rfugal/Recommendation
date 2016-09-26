@@ -185,11 +185,11 @@ function WordsCtrl($scope) {
         $scope.bookRecommendations = [];
         for (var book in bookLibrary) {
             var bookScore = scoreBook(bookLibrary[book], $scope.Words);
-            if (bookScore >= $scope.recommendationLowerLimit && bookScore <= $scope.recommendationUpperLimit) {
-                $scope.bookRecommendations.push({'score':bookScore, 'book':bookLibrary[book]});
+            if (bookScore.percentage >= $scope.recommendationLowerLimit && bookScore.percentage <= $scope.recommendationUpperLimit) {
+                $scope.bookRecommendations.push({'score':bookScore.percentage, 'book':bookLibrary[book], 'difficulty':bookScore.difficulty});
             };
         };
-        $scope.bookRecommendations = _.sortBy($scope.bookRecommendations, 'score');
+        $scope.bookRecommendations = _.sortBy($scope.bookRecommendations, 'difficulty');
         if ($scope.bookRecommendations.length > 5) {
             $scope.bookRecommendations = $scope.bookRecommendations; //trim to ideal
         };
@@ -243,17 +243,37 @@ function WordsCtrl($scope) {
 function scoreBook (book, wordMap) {
     var bookScore = 0;
     var bookWordCount = 0;
+    var UNKWords = [];
     for (var word in book.words) {
         var wordCount = book.words[word];
         bookWordCount += wordCount;
-        if (wordMap[word]) {
-            if (wordMap[word].RAN){
-                bookScore += wordCount;
-            }
+        if (wordMap[word].RAN){
+            bookScore += wordCount;
+        } else {
+            UNKWords.push(word);
         };
     };
-    bookScore = Number((bookScore / bookWordCount * 100).toFixed(0));
-    return bookScore;
+    bookScore = bookScore / bookWordCount;
+    if (bookScore > .25 && bookScore < .995) {
+        jQuery.ajax({
+            url: "./personalScore.php",
+            data: {
+                'UNKWords' : angular.toJson(UNKWords),
+                'bookPercent' : bookScore,
+                'wordCount' : bookWordCount
+            },
+            type: "POST",
+            dataType: "xml"
+        }).done(function ( returnedScore ) {
+            bookScore = Number((bookScore * 100).toFixed(0));
+            return {difficulty: returnedScore, percentage: bookScore};        
+        });
+    } else if (bookScore = 1) {
+        return {difficulty: 0, percentage: 100};
+    } else {
+        bookScore = Number((bookScore * 100).toFixed(0));
+        return {difficulty: 404, percentage: bookScore};
+    };
 }
 
 function postBook(bookName, book) {
