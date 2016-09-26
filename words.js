@@ -184,7 +184,7 @@ function WordsCtrl($scope) {
     $scope.showRecommendations = function () {
         $scope.bookRecommendations = [];
         for (var book in bookLibrary) {
-            var bookScore = scoreBook(bookLibrary[book], $scope.Words);
+            var bookScore = scoreBook(bookLibrary[book], $scope.Words, $scope.recommendationLowerLimit, $scope.recommendationUpperLimit);
             if (bookScore.percentage >= $scope.recommendationLowerLimit && bookScore.percentage <= $scope.recommendationUpperLimit) {
                 $scope.bookRecommendations.push({'score':bookScore.percentage, 'book':bookLibrary[book], 'difficulty':bookScore.difficulty});
             };
@@ -240,33 +240,34 @@ function WordsCtrl($scope) {
     });
 }
 
-function scoreBook (book, wordMap) {
+function scoreBook (book, wordMap, upper, lower) {
     var bookScore = 0;
     var bookWordCount = 0;
     var UNKWords = [];
-    for (var word in book.words) {
-        var wordCount = book.words[word];
+    for (var inspect in book.words) {
+        var wordCount = book.words[inspect];
         bookWordCount += wordCount;
-        if (wordMap[word].RAN){
+        if (wordMap[inspect] != null && wordMap[inspect].RAN){
             bookScore += wordCount;
         } else {
-            UNKWords.push(word);
+            UNKWords.push(inspect);
         };
     };
     bookScore = bookScore / bookWordCount;
-    if (bookScore > .25 && bookScore < .995) {
+    if (bookScore * 100 >= lower && bookScore * 100 < upper) {
         jQuery.ajax({
             url: "./personalScore.php",
             data: {
-                'UNKWords' : angular.toJson(UNKWords),
+                'UNKWords' : JSON.stringify(UNKWords),
                 'bookPercent' : bookScore,
                 'wordCount' : bookWordCount
             },
             type: "POST",
-            dataType: "xml"
-        }).done(function ( data ) {
-            bookScore = Number((bookScore * 100).toFixed(0));
-            return {difficulty: data, percentage: bookScore};        
+            dataType: "JSON",
+            success: function(response) {
+                bookScore = Number((bookScore * 100).toFixed(0));
+                return {difficulty: response, percentage: bookScore};        
+            }
         });
     } else if (bookScore = 1) {
         return {difficulty: 0, percentage: 100};
