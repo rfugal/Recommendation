@@ -240,7 +240,7 @@ function WordsCtrl($scope) {
     });
 }
 
-function scoreBook (book, wordMap, upper, lower) {
+function scoreBook (book, wordMap, lower, upper) {
     var bookScore = 0;
     var bookWordCount = 0;
     var UNKWords = [];
