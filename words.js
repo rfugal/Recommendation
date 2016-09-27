@@ -254,7 +254,10 @@ function scoreBook (book, wordMap, upper, lower) {
         };
     };
     bookScore = bookScore / bookWordCount;
-    if (bookScore * 100 >= lower && bookScore * 100 < upper) {
+    alert(bookScore);
+    if (bookScore > (lower/100) && bookScore < (upper/100)) {
+        alert(UNKWords);
+        var response;
         jQuery.ajax({
             url: "./personalScore.php",
             data: {
@@ -264,11 +267,12 @@ function scoreBook (book, wordMap, upper, lower) {
             },
             type: "POST",
             dataType: "JSON",
-            success: function(response) {
-                bookScore = Number((bookScore * 100).toFixed(0));
-                return {difficulty: response, percentage: bookScore};        
+            success: function(data) {
+                response = data;        
             }
         });
+        bookScore = Number((bookScore * 100).toFixed(0));
+        return  {difficulty: response, percentage: bookScore}
     } else if (bookScore = 1) {
         return {difficulty: 0, percentage: 100};
     } else {
