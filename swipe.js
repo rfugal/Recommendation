@@ -10,41 +10,9 @@ $(document).ready(function () {
 		$('.flipside').hide();
 		$('#learnCard').hide();
 		$('.swiper-wrapper-h').show();
-		let userInput = document.createElement('div');
-		$(userInput).attr('id','userInput');
 		var mySwiper = $('.swiper-container-h')[0].swiper;
 		mySwiper.lockSwipeToPrev();
-		if (activeCards[mySwiper.realIndex].unknown !== undefined) {
-			let unknown = activeCards[mySwiper.realIndex].unknown;
-			if (unknown !== null) {
-				if (unknown[2] == '_') unknown = unknown.slice(3,unknown.length);
-				let parsed_unknown = document.createElement('span');
-				for (i=0; i<unknown.length; i++) {
-					let letter = document.createElement('span');
-					$(letter).addClass('letter_' + unknown[i].toLowerCase()).text(unknown[i]);
-					$(parsed_unknown).append(letter);
-					if ($('.button_' + unknown[i].toLowerCase()).length == 0) {
-						let letter_button = document.createElement('button');
-						$(letter_button).addClass('letterButton').text(unknown[i]).on('click', function() {
-							$('.letter_'+unknown[i].toLowerCase).addClass('deconstructed');
-						});
-						$(userInput).append(letter_button);
-					}
-				}
-				let cardString = activeCards[mySwiper.realIndex].string;
-				cardString = cardString.replace(unknown, "<span class='unknown'>" + $(parsed_unknown).html() + "</span>");
-				$('.swiper-slide-active').html(cardString);
-			}
-		}
-		let textbox = document.createElement('input');
-		$(textbox).attr({'type':'text','id':'typeHere','placeholder':'type the red word here'});
-		let submitbutton = document.createElement('button');
-		$(submitbutton).text('OK').attr('id','submitbutton');
-		$(userInput).append(textbox, "<br/>", submitbutton);
-		$('body').append(userInput);
-		$('#submitbutton').on('click', function() {
-			learnword();
-		});
+		if (activeCards[mySwiper.realIndex].unknown !== undefined) makeButtons();
 	});
 	
 	$('body').append(countDown, learn);
@@ -127,16 +95,20 @@ function buildCards() {
 				if (activeCards[1].unknown == null && new Date() < endtime) wpm = ((allottedtime - 2000)/500 + 1)/(Math.floor(new Date()) - Math.floor(endtime) + allottedtime - 600);
 				putCard(test[1], true, false, wpm);
 				activeCards[1] = Cards.pop();
-				$('.swiper-slide-prev').text(activeCards[1].string);
-				$('.swiper-slide-next').text(activeCards[1].string);
+                let cardString = activeCards[1].string;
+                if (activeCards[1].unknown !== null) cardString = replaceUnknown(activeCards[1].unknown,cardString);
+				$('.swiper-slide-prev').text(cardString);
+				$('.swiper-slide-next').text(cardString);
 			} else if (swiper.realIndex == 1) {
 				let test = activeCards;
 				//$('#currently-tagged').text('Recognized ' + test[0].stringId);
 				if (activeCards[0].unknown == null && new Date() < endtime) wpm = ((allottedtime - 2000)/500 + 1)/(Math.floor(new Date()) - Math.floor(endtime) + allottedtime - 600);
 				putCard(test[0], true, false, wpm);
 				activeCards[0] = Cards.pop();
-				$('.swiper-slide-prev').text(activeCards[0].string);
-				$('.swiper-slide-next').text(activeCards[0].string);
+                let cardString = activeCards[0].string;
+                if (activeCards[0].unknown !== null) cardString = replaceUnknown(activeCards[0].unknown,cardString);
+				$('.swiper-slide-prev').text(cardString);
+				$('.swiper-slide-next').text(cardString);
 			}
 		},
 		onSlideNextEnd: function(swiper) {
@@ -145,35 +117,63 @@ function buildCards() {
 				//$('#currently-tagged').text('Unknown ' + test[1].stringId);
 				putCard(test[1], false, false, null);
 				activeCards[1] = Cards.pop();
-				$('.swiper-slide-prev').text(activeCards[1].string);
-				$('.swiper-slide-next').text(activeCards[1].string);
+                let cardString = activeCards[1].string;
+                if (activeCards[1].unknown !== null) cardString = replaceUnknown(activeCards[1].unknown,cardString);
+				$('.swiper-slide-prev').text(cardString);
+				$('.swiper-slide-next').text(cardString);
 			} else if (swiper.realIndex == 1) {
 				let test = activeCards;
 				//$('#currently-tagged').text('Unknown ' + test[0].stringId);
 				putCard(test[0], false, false, null);
 				activeCards[0] = Cards.pop();
-				$('.swiper-slide-prev').text(activeCards[0].string);
-				$('.swiper-slide-next').text(activeCards[0].string);
+                let cardString = activeCards[0].string;
+                if (activeCards[0].unknown !== null) cardString = replaceUnknown(activeCards[0].unknown,cardString);
+				$('.swiper-slide-prev').text(cardString);
+				$('.swiper-slide-next').text(cardString);
 			}
 		}
 	});
 }
+function replaceUnknown(unknown, cardString) {
+    if (unknown[2] == '_') unknown = unknown.slice(3,unknown.length);
+    let parsed_unknown = document.createElement('span');
+	for (i=0; i<unknown.length; i++) {
+        let letter = document.createElement('span');
+        $(letter).addClass('letter letter_' + unknown[i].toLowerCase()).text(unknown[i]);
+        $(parsed_unknown).append(letter);
+    }
+	cardString = cardString.replace(unknown, "<span class='unknown'>" + $(parsed_unknown).html() + "</span>");
+	return cardString;
+}
+function makeButtons() {
+	let userInput = document.createElement('div');
+	$(userInput).attr('id','userInput');
+	$('body').append(userInput);
+    if ($('.swiper-slide-active').find('.unknown').length !== 0) {
+        let unknown = $('.swiper-slide-active').find('.unknown').text().toLowerCase();
+        for (i=0; i<unknown.length; i++) {
+            if ($('.button_' + unknown[i].length == 0)) {
+                let letter_button = document.createElement('button');
+                let letter = '.letter_'+unknown[i];
+                $(letter_button).addClass('letterButton').text(unknown[i]).on('click', function(letter) {
+                    if ($('.swiper-slide-active').find(letter).length == 0) $('.letter').removeClass('digested');
+                    else {
+                        $('.swiper-slide-active').find(letter).addClass('digested');
+                        if ($('.digested').length == $('.swiper-slide-active').find('.letter').length) learnword();
+                    }
+                });
+                $(userInput).append(letter_button);
+            }
+        }
+    }
+}
 function learnword () {
-	let userInput = $('#typeHere').val();
-	userInput = /\b[A-z']+/.exec(userInput)[0].toLowerCase();
-	console.log(userInput);
 	$('#userInput').remove();
 	var mySwiper = $('.swiper-container-h')[0].swiper;
 	if (mySwiper.realIndex == 0 && activeCards[0].unknown !== null) {
-		let comp = activeCards[0].unknown;
-		if (comp[2] == '_') comp = comp.slice(3,comp.length);
-		console.log(comp);
-		if (comp == userInput) putCard(activeCards[0], false, true, null); 
+		putCard(activeCards[0], false, true, null); 
 	} else if (mySwiper.realIndex == 1 && activeCards[1].unknown !== null) {
-		let comp = activeCards[1].unknown;
-		if (comp[2] == '_') comp = comp.slice(3,comp.length);
-		console.log(comp);
-		if (comp == userInput) putCard(activeCards[1], false, true, null); 
+		putCard(activeCards[1], false, true, null); 
 	}
 	mySwiper.slideNext();
 }
