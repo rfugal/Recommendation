@@ -65,7 +65,7 @@ function buildCards() {
 	activeCards[0] = Cards.pop();
 	let Card = document.createElement('div');
 	$(Card).addClass('swiper-slide');
-	$(Card).append(activeCards[0].string);
+	$(Card).append(replaceUnknown(activeCards[0].unknown,activeCards[0].string);
 	let Blank = document.createElement('div');
 	$(Blank).addClass('swiper-slide');
 	$('.swiper-wrapper-h').append(Card,Blank);
@@ -97,8 +97,8 @@ function buildCards() {
 				activeCards[1] = Cards.pop();
                 let cardString = activeCards[1].string;
                 if (activeCards[1].unknown !== null) cardString = replaceUnknown(activeCards[1].unknown,cardString);
-				$('.swiper-slide-prev').text(cardString);
-				$('.swiper-slide-next').text(cardString);
+				$('.swiper-slide-prev').html(cardString);
+				$('.swiper-slide-next').html(cardString);
 			} else if (swiper.realIndex == 1) {
 				let test = activeCards;
 				//$('#currently-tagged').text('Recognized ' + test[0].stringId);
@@ -107,29 +107,29 @@ function buildCards() {
 				activeCards[0] = Cards.pop();
                 let cardString = activeCards[0].string;
                 if (activeCards[0].unknown !== null) cardString = replaceUnknown(activeCards[0].unknown,cardString);
-				$('.swiper-slide-prev').text(cardString);
-				$('.swiper-slide-next').text(cardString);
+				$('.swiper-slide-prev').html(cardString);
+				$('.swiper-slide-next').html(cardString);
 			}
 		},
-		onSlideNextEnd: function(swiper) {
-			if (swiper.realIndex == 0) {
-				let test = activeCards;
+        onSlideNextEnd: function(swiper) {
+            if (swiper.realIndex == 0) {
+                let test = activeCards;
 				//$('#currently-tagged').text('Unknown ' + test[1].stringId);
 				putCard(test[1], false, false, null);
 				activeCards[1] = Cards.pop();
                 let cardString = activeCards[1].string;
                 if (activeCards[1].unknown !== null) cardString = replaceUnknown(activeCards[1].unknown,cardString);
-				$('.swiper-slide-prev').text(cardString);
-				$('.swiper-slide-next').text(cardString);
-			} else if (swiper.realIndex == 1) {
+				$('.swiper-slide-prev').html(cardString);
+				$('.swiper-slide-next').html(cardString);
+            } else if (swiper.realIndex == 1) {
 				let test = activeCards;
 				//$('#currently-tagged').text('Unknown ' + test[0].stringId);
 				putCard(test[0], false, false, null);
 				activeCards[0] = Cards.pop();
                 let cardString = activeCards[0].string;
                 if (activeCards[0].unknown !== null) cardString = replaceUnknown(activeCards[0].unknown,cardString);
-				$('.swiper-slide-prev').text(cardString);
-				$('.swiper-slide-next').text(cardString);
+				$('.swiper-slide-prev').html(cardString);
+				$('.swiper-slide-next').html(cardString);
 			}
 		}
 	});
