@@ -65,7 +65,7 @@ function buildCards() {
 	activeCards[0] = Cards.pop();
 	let Card = document.createElement('div');
 	$(Card).addClass('swiper-slide');
-	$(Card).append(replaceUnknown(activeCards[0].unknown,activeCards[0].string);
+	$(Card).append(replaceUnknown(activeCards[0].unknown,activeCards[0].string));
 	let Blank = document.createElement('div');
 	$(Blank).addClass('swiper-slide');
 	$('.swiper-wrapper-h').append(Card,Blank);
@@ -155,7 +155,8 @@ function makeButtons() {
             if ($('.button_' + unknown[i].length == 0)) {
                 let letter_button = document.createElement('button');
                 let letter = '.letter_'+unknown[i];
-                $(letter_button).addClass('letterButton').text(unknown[i]).on('click', function(letter) {
+                $(letter_button).addClass('letterButton').text(unknown[i]).on('click', function(res) {
+                    let letter = '.letter_'+res.innerHTML;
                     if ($('.swiper-slide-active').find(letter).length == 0) $('.letter').removeClass('digested');
                     else {
                         $('.swiper-slide-active').find(letter).addClass('digested');
