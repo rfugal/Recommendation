@@ -179,9 +179,17 @@ function WordsCtrl($scope) {
         
     };
     
-    $scope.recommendationUpperLimit = 100;
-    $scope.recommendationLowerLimit = 45;
+    if (localStorage.getItem('Limits') != null) {
+        var limits = JSON.parse(localStorage.getItem('Limits'));
+        $scope.recommendationUpperLimit = limits.upper;
+        $scope.recommendationLowerLimit = limits.lower;
+    } else {
+        $scope.recommendationUpperLimit = 99;
+        $scope.recommendationLowerLimit = 45;
+    }
     $scope.showRecommendations = function () {
+        var limits = {"upper":$scope.recommendationUpperLimit, "lower":$scope.recommendationLowerLimit};
+        localStorage.setItem('Limits', angular.toJson(limits));
         $scope.bookRecommendations = [];
         for (var book in bookLibrary) {
             var bookScore = scoreBook(bookLibrary[book], $scope.Words, $scope.recommendationLowerLimit, $scope.recommendationUpperLimit);
@@ -202,6 +210,9 @@ function WordsCtrl($scope) {
             window.localStorage.setItem('SaraWordModel', angular.toJson($scope.Words));
             bookLibrary = {};
             window.localStorage.setItem('SaraBookLibrary', angular.toJson(bookLibrary));
+            window.localStorage.removeItem('newVisit');
+            window.localStorage.removeItem('SaraUserEmail');
+            window.localStorage.removeItem('Limits');
             location.reload(true);
         };
     }
@@ -230,12 +241,12 @@ function WordsCtrl($scope) {
     
     $("#myModal").on('hide.bs.modal', function () {
         $('#myModal iframe').attr("src",$('#myModal iframe').attr('src'))
+        localStorage.setItem('newVisit', 'false');
     });
     
     angular.element(document).ready(function () {
         if (localStorage.getItem('newVisit') == null) {
             $('#myModal').modal("show");
-            localStorage.setItem('newVisit', 'false');
         };
     });
 }
@@ -253,16 +264,16 @@ function scoreBook (book, wordMap, lower, upper) {
             UNKWords.push(inspect);
         };
     };
-    bookScore = bookScore / bookWordCount;
-    alert(bookScore);
-    if (bookScore > (lower/100) && bookScore < (upper/100)) {
-        alert(UNKWords);
+    bookPercent = bookScore / bookWordCount;
+    bookScore = Number((bookPercent * 100).toFixed());
+    if (bookScore >= lower && bookScore < upper) {
         var response;
         jQuery.ajax({
             url: "./personalScore.php",
+            async: false,
             data: {
                 'UNKWords' : JSON.stringify(UNKWords),
-                'bookPercent' : bookScore,
+                'bookPercent' : bookPercent,
                 'wordCount' : bookWordCount
             },
             type: "POST",
@@ -271,12 +282,10 @@ function scoreBook (book, wordMap, lower, upper) {
                 response = data;        
             }
         });
-        bookScore = Number((bookScore * 100).toFixed(0));
         return  {difficulty: response, percentage: bookScore}
-    } else if (bookScore = 1) {
-        return {difficulty: 0, percentage: 100};
+    } else if (bookScore >= upper) {
+        return {difficulty: 0, percentage: bookScore};
     } else {
-        bookScore = Number((bookScore * 100).toFixed(0));
         return {difficulty: 404, percentage: bookScore};
     };
 }
