@@ -226,7 +226,7 @@ function draw(t) {
 }
 function abc (c, unknown) {
     var abc = shuffle('abcdefghijklmnopqrstuvwxyz'.split(''));
-    unknown = unknown.split('').concat(abc);
+    unknown = unknown.concat(abc);
     abc = [];
     for (l in unknown) {
         if ($.inArray(unknown[l], abc) === -1) abc.push(unknown[l]);
