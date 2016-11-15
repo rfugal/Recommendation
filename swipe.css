@@ -45,8 +45,11 @@ body{
 	width:100%;
 	height:100%;
 }
-.unknown {
+.learn {
 	color: red;
+}
+.digested {
+    color: blue;
 }
 #userInput {
     margin: 1% auto auto auto;
@@ -55,8 +58,7 @@ body{
     height:72%;
 }
 .letterButton {
-    font-size: 120%;
-    font-weight: bold;
+    font-size: 90%;
     margin: 0.2%;
     height: 22%;
     width: 30%;

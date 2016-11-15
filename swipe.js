@@ -151,7 +151,7 @@ function makeButtons() {
 	$(userInput).attr('id','userInput');
 	$('body').append(userInput);
     if ($('.swiper-slide-active').find('.unknown').length !== 0) {
-        let word = $('.swiper-slide-active').find('.unknown').text().toLowerCase();
+        let word = $('.swiper-slide-active').find('.unknown').addClass('learn').text().toLowerCase();
         var unknown = [];
         for (l in word) {
             if ($.inArray(word[l], unknown) === -1) unknown.push(word[l]);
