@@ -135,6 +135,7 @@ function buildCards() {
 	});
 }
 function replaceUnknown(unknown, cardString) {
+    if (unknown == null) return cardString;
     if (unknown[2] == '_') unknown = unknown.slice(3,unknown.length);
     let parsed_unknown = document.createElement('span');
 	for (i=0; i<unknown.length; i++) {
@@ -150,13 +151,20 @@ function makeButtons() {
 	$(userInput).attr('id','userInput');
 	$('body').append(userInput);
     if ($('.swiper-slide-active').find('.unknown').length !== 0) {
-        let unknown = $('.swiper-slide-active').find('.unknown').text().toLowerCase();
+        let word = $('.swiper-slide-active').find('.unknown').text().toLowerCase();
+        var unknown = [];
+        for (l in word) {
+            if ($.inArray(word[l], unknown) === -1) unknown.push(word[l]);
+        }
+        let c = 9;
+        if (unknown.length > c) c = 12;
+        unknown = abc(c, unknown);
         for (i=0; i<unknown.length; i++) {
             if ($('.button_' + unknown[i].length == 0)) {
                 let letter_button = document.createElement('button');
                 let letter = '.letter_'+unknown[i];
                 $(letter_button).addClass('letterButton').text(unknown[i]).on('click', function(res) {
-                    let letter = '.letter_'+res.innerHTML;
+                    let letter = '.letter_' + res.target.innerHTML;
                     if ($('.swiper-slide-active').find(letter).length == 0) $('.letter').removeClass('digested');
                     else {
                         $('.swiper-slide-active').find(letter).addClass('digested');
@@ -170,13 +178,15 @@ function makeButtons() {
 }
 function learnword () {
 	$('#userInput').remove();
-	var mySwiper = $('.swiper-container-h')[0].swiper;
-	if (mySwiper.realIndex == 0 && activeCards[0].unknown !== null) {
-		putCard(activeCards[0], false, true, null); 
-	} else if (mySwiper.realIndex == 1 && activeCards[1].unknown !== null) {
-		putCard(activeCards[1], false, true, null); 
-	}
-	mySwiper.slideNext();
+    setTimeout(function(){
+        var mySwiper = $('.swiper-container-h')[0].swiper;
+        if (mySwiper.realIndex == 0 && activeCards[0].unknown !== null) {
+            putCard(activeCards[0], false, true, null); 
+        } else if (mySwiper.realIndex == 1 && activeCards[1].unknown !== null) {
+            putCard(activeCards[1], false, true, null); 
+        }
+        mySwiper.slideNext();
+    }, 2000);
 }
 
 function putCard (card, recognition, taught, wpm) {
@@ -213,4 +223,32 @@ function draw(t) {
     context.lineWidth = linewidth;
     context.strokeStyle = 'blue';
     context.stroke();
+}
+function abc (c, unknown) {
+    var abc = shuffle('abcdefghijklmnopqrstuvwxyz'.split(''));
+    unknown = unknown.split('').concat(abc);
+    abc = [];
+    for (l in unknown) {
+        if ($.inArray(unknown[l], abc) === -1) abc.push(unknown[l]);
+    }
+    abc = shuffle(abc.slice(0,c));
+    return abc;
+}
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
 }
