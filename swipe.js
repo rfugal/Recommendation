@@ -152,6 +152,7 @@ function makeButtons() {
 	$('body').append(userInput);
     if ($('.swiper-slide-active').find('.unknown').length !== 0) {
         let word = $('.swiper-slide-active').find('.unknown').addClass('learn').text().toLowerCase();
+        speakWord(word);
         var unknown = [];
         for (l in word) {
             if ($.inArray(word[l], unknown) === -1) unknown.push(word[l]);
@@ -168,7 +169,7 @@ function makeButtons() {
                     if ($('.swiper-slide-active').find(letter).length == 0) $('.letter').removeClass('digested');
                     else {
                         $('.swiper-slide-active').find(letter).addClass('digested');
-                        if ($('.digested').length == $('.swiper-slide-active').find('.letter').length) learnword();
+                        if ($('.digested').length == $('.swiper-slide-active').find('.letter').length) learnword($('.swiper-slide-active').find('.unknown').text());
                     }
                 });
                 $(userInput).append(letter_button);
@@ -176,7 +177,8 @@ function makeButtons() {
         }
     }
 }
-function learnword () {
+function learnword (value) {
+    speakWord(value);
 	$('#userInput').remove();
     setTimeout(function(){
         var mySwiper = $('.swiper-container-h')[0].swiper;
@@ -251,4 +253,15 @@ function shuffle(array) {
   }
 
   return array;
+}
+
+function speakWord(value) {
+    var u1 = new SpeechSynthesisUtterance(value);
+    u1.lang = 'en-US';
+    u1.pitch = 1;
+    u1.rate = 1;
+    //u1.voice = voices[3];
+    u1.voiceURI = 'native';
+    u1.volume = 1;
+    speechSynthesis.speak(u1);
 }
