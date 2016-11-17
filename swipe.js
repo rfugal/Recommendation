@@ -89,6 +89,7 @@ function buildCards() {
 			beginTimer($('.swiper-slide-active').text());
 			swiper.unlockSwipeToPrev();
 			$('#userInput').remove();
+            activeUnknown = $('.swiper-slide-active').find('.unknown').text();
 		},
 		onSlidePrevEnd: function(swiper) {
 			var wpm = null;
@@ -134,12 +135,8 @@ function buildCards() {
 	});
 }
 function replaceUnknown(unknown, cardString) {
-	if (unknown == null) {
-		activeUnknown = '';
-		return cardString;
-	}
+	if (unknown == null) return cardString;
 	if (unknown[2] == '_') unknown = unknown.slice(3,unknown.length);
-	activeUnknown = unknown;
 	let parsed_unknown = document.createElement('span');
 	for (i=0; i<unknown.length; i++) {
 		let letter = document.createElement('span');
