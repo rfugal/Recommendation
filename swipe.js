@@ -1,7 +1,6 @@
 var synth = window.speechSynthesis;
 var voices = synth.getVoices();
 var Cards;
-var activeUnknown = '';
 $(document).ready(function () {
 	Cards = JSON.parse($('#lambdaResponse').text());
 	Cards.unshift({string:'No More Cards',stringId:null,unknown:null});	
@@ -14,7 +13,7 @@ $(document).ready(function () {
 		$('#learnCard').hide();
 		$('.swiper-wrapper-h').show();
 		var mySwiper = $('.swiper-container-h')[0].swiper;
-		mySwiper.lockSwipeToPrev();
+		mySwiper.lockSwipes();
 		if (activeCards[mySwiper.realIndex].unknown !== undefined) makeButtons();
 	});
 	
@@ -55,7 +54,7 @@ function initializeClock(id) {
 			$('.flipside').show();
 			$('#timer').hide();
 			$('#learnCard').show();
-			speakWord(activeUnknown);
+			speakWord($('.swiper-slide-active').find('.unknown').text());
 		}
 	}
 	
@@ -89,7 +88,6 @@ function buildCards() {
 			beginTimer($('.swiper-slide-active').text());
 			swiper.unlockSwipeToPrev();
 			$('#userInput').remove();
-            activeUnknown = $('.swiper-slide-active').find('.unknown').text();
 		},
 		onSlidePrevEnd: function(swiper) {
 			var wpm = null;
@@ -182,6 +180,7 @@ function learnword (value) {
 	$('#userInput').remove();
 	setTimeout(function(){
 		var mySwiper = $('.swiper-container-h')[0].swiper;
+        mySwiper.unlockSwipes();
 		if (mySwiper.realIndex == 0 && activeCards[0].unknown !== null) {
 			putCard(activeCards[0], false, true, null); 
 		} else if (mySwiper.realIndex == 1 && activeCards[1].unknown !== null) {
