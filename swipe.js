@@ -54,7 +54,6 @@ function initializeClock(id) {
 			$('.flipside').show();
 			$('#timer').hide();
 			$('#learnCard').show();
-			speakWord($('.swiper-slide-active').find('.unknown').text());
 		}
 	}
 	
@@ -256,7 +255,7 @@ function speakWord(value) {
 	u1.lang = 'en-US';
 	u1.pitch = 1;
 	u1.rate = 1;
-	u1.voice = voices[3];
+	//u1.voice = voices[3];
 	u1.voiceURI = 'native';
 	u1.volume = 1;
 	speechSynthesis.speak(u1);

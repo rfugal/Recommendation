@@ -261,7 +261,7 @@ function scoreBook (book, wordMap, lower, upper) {
         if (wordMap[inspect] != null && wordMap[inspect].RAN){
             bookScore += wordCount;
         } else {
-            UNKWords.push(inspect);
+            if (book.words[inspect] < 7) UNKWords.push(inspect);
         };
     };
     bookPercent = bookScore / bookWordCount;
