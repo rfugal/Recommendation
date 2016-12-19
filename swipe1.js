@@ -3,20 +3,19 @@ var voices = synth.getVoices();
 var Cards;
 $(document).ready(function () {
 	Cards = JSON.parse($('#lambdaResponse').text());
-	Cards.unshift({string:'No More Cards',stringId:null,unknown:null});	
 	Cards.unshift({string:'Refresh Page',stringId:null,unknown:null});	
 	let countDown = document.createElement('canvas');
 	$(countDown).attr({'id':'timer','width':'400','height':'400'});
 	let learn = document.createElement('div');
 	$(learn).attr('id','learnCard').text('abc').on('click', function (){
-		$('.flipside').hide();
-		$('#learnCard').hide();
-		$('.swiper-wrapper-h').show();
-		var mySwiper = $('.swiper-container-h')[0].swiper;
-		mySwiper.lockSwipes();
-		if (activeCards[mySwiper.realIndex].unknown !== undefined) makeButtons();
+		if (activeCard.unknown !== undefined) {
+            $('#flipside').hide();
+            $('#learnCard').hide();
+            $('#cardFace').show();
+            $('.fluencyButtons').hide();
+            makeButtons();
+        }
 	});
-	
 	$('body').append(countDown, learn);
 	buildCards();
 });
@@ -25,10 +24,10 @@ var allottedtime;
 var endtime;
 
 function beginTimer(sentence) {
-	$('.flipside').hide();
+	$('#flipside').hide();
 	$('#timer').show();
 	$('#learnCard').hide();
-	$('.swiper-wrapper-h').show();
+	$('#cardFace').show();
 	let wordCount = sentence.split(' ').length - 1;
 	allottedtime = 2000 + wordCount * 500;
 	endtime = new Date(Date.parse(new Date()) + allottedtime);
@@ -50,8 +49,8 @@ function initializeClock(id) {
 		draw(t.hundredths);
 		if (t.total <= 0) {
 			clearInterval(timeinterval);
-			$('.swiper-wrapper-h').hide();
-			$('.flipside').show();
+			$('#cardFace').hide();
+			$('#flipside').show();
 			$('#timer').hide();
 			$('#learnCard').show();
 		}
@@ -60,76 +59,39 @@ function initializeClock(id) {
 	updateClock();
 	var timeinterval = setInterval(updateClock, 50);
 }
-var activeCards = ['',{stringId:null}];
+var activeCard;
 function buildCards() {
-	console.log('building Cards');
-	activeCards[0] = Cards.pop();
+	activeCard = Cards.pop();
 	let Card = document.createElement('div');
-	$(Card).addClass('swiper-slide');
-	$(Card).append(replaceUnknown(activeCards[0].unknown,activeCards[0].string));
-	let Blank = document.createElement('div');
-	$(Blank).addClass('swiper-slide');
-	$('.swiper-wrapper-h').append(Card,Blank);
 	let VslideBack = document.createElement('div');
-	$(VslideBack).addClass('flipside').attr('style','background-image:url(https://s3.amazonaws.com/sara.ai-media-fles/swipe.png)').hide();
-	$('.swiper-container-h').append(VslideBack);
-	var swiperH = new Swiper('.swiper-container-h', {
-		effect: 'flip',
-		grabCursor: true,
-		initialSlide: 0,
-		speed: 300,
-		centeredSlides: true,
-		onlyExternal: false,
-		allowSwipeToPrev: true,
-		allowSwipeToNext: true,
-		loop: true,
-		onSlideChangeStart: function(swiper) {
-			beginTimer($('.swiper-slide-active').text());
-			swiper.unlockSwipeToPrev();
-			$('#userInput').remove();
-		},
-		onSlidePrevEnd: function(swiper) {
-			var wpm = null;
-			if (swiper.realIndex == 0) {
-				let test = activeCards;
-				if (activeCards[1].unknown == null && new Date() < endtime) wpm = ((allottedtime - 2000)/500 + 1)/(Math.floor(new Date()) - Math.floor(endtime) + allottedtime - 600);
-				putCard(test[1], true, false, wpm);
-				activeCards[1] = Cards.pop();
-				let cardString = activeCards[1].string;
-				cardString = replaceUnknown(activeCards[1].unknown,cardString);
-				$('.swiper-slide-prev').html(cardString);
-				$('.swiper-slide-next').html(cardString);
-			} else if (swiper.realIndex == 1) {
-				let test = activeCards;
-				if (activeCards[0].unknown == null && new Date() < endtime) wpm = ((allottedtime - 2000)/500 + 1)/(Math.floor(new Date()) - Math.floor(endtime) + allottedtime - 600);
-				putCard(test[0], true, false, wpm);
-				activeCards[0] = Cards.pop();
-				let cardString = activeCards[0].string;
-				cardString = replaceUnknown(activeCards[0].unknown,cardString);
-				$('.swiper-slide-prev').html(cardString);
-				$('.swiper-slide-next').html(cardString);
-			}
-		},
-		onSlideNextEnd: function(swiper) {
-			if (swiper.realIndex == 0) {
-				let test = activeCards;
-				putCard(test[1], false, false, null);
-				activeCards[1] = Cards.pop();
-				let cardString = activeCards[1].string;
-				cardString = replaceUnknown(activeCards[1].unknown,cardString);
-				$('.swiper-slide-prev').html(cardString);
-				$('.swiper-slide-next').html(cardString);
-			} else if (swiper.realIndex == 1) {
-				let test = activeCards;
-				putCard(test[0], false, false, null);
-				activeCards[0] = Cards.pop();
-				let cardString = activeCards[0].string;
-				cardString = replaceUnknown(activeCards[0].unknown,cardString);
-				$('.swiper-slide-prev').html(cardString);
-				$('.swiper-slide-next').html(cardString);
-			}
-		}
-	});
+	let miss = document.createElement('button');
+	let recog = document.createElement('button');
+	$(Card).addClass('card').attr('id','cardFace');
+	$(Card).append(replaceUnknown(activeCard.unknown,activeCard.string));
+	$(VslideBack).addClass('card').text('use buttons on left and right').attr('id','flipside');
+    $(VslideBack).attr('style','background-image:url(https://reader.sara.ai/wp-content/uploads/2016/10/swipe.png)').hide();
+    $(miss).addClass('fluencyButtons').on('click',function(){
+        missed();
+    });
+    $(recog).addClass('fluencyButtons').on('click',function(){
+        recognized();
+    });
+	$('.container').append(miss,Card,VslideBack,recog);
+}
+function missed() {
+    putCard(activeCard,false,false,null);
+    nextCard();
+}
+function recognized() {
+    putCard(activeCard,true,false,null);
+    nextCard();
+}
+function nextCard() {
+    if (Cards.length > 0) activeCard = Cards.pop();
+    $('#cardFace').html('').append(replaceUnknown(activeCard.unknown,activeCard.string));
+	$('.fluencyButtons').show();
+	$('#userInput').remove();
+    beginTimer($('#cardFace').text());
 }
 function replaceUnknown(unknown, cardString) {
 	if (unknown == null) return cardString;
@@ -147,8 +109,8 @@ function makeButtons() {
 	let userInput = document.createElement('div');
 	$(userInput).attr('id','userInput');
 	$('body').append(userInput);
-	if ($('.swiper-slide-active').find('.unknown').length !== 0) {
-		let word = $('.swiper-slide-active').find('.unknown').addClass('learn').text().toLowerCase();
+	if ($('#cardFace').find('.unknown').length !== 0) {
+		let word = $('#cardFace').find('.unknown').addClass('learn').text().toLowerCase();
 		speakWord(word);
 		var unknown = [];
 		for (l in word) {
@@ -163,10 +125,10 @@ function makeButtons() {
 				let letter = '.letter_'+unknown[i];
 				$(letter_button).addClass('letterButton').text(unknown[i]).on('click', function(res) {
 					let letter = '.letter_' + res.target.innerHTML;
-					if ($('.swiper-slide-active').find(letter).length == 0) $('.letter').removeClass('digested');
+					if ($('#cardFace').find(letter).length == 0) $('.letter').removeClass('digested');
 					else {
-						$('.swiper-slide-active').find(letter).addClass('digested');
-						if ($('.digested').length == $('.swiper-slide-active').find('.letter').length) learnword($('.swiper-slide-active').find('.unknown').text());
+						$('#cardFace').find(letter).addClass('digested');
+						if ($('.digested').length == $('#cardFace').find('.letter').length) learnword($('#cardFace').find('.unknown').text());
 					}
 				});
 				$(userInput).append(letter_button);
@@ -178,15 +140,9 @@ function learnword (value) {
 	speakWord(value);
 	$('#userInput').remove();
 	setTimeout(function(){
-		var mySwiper = $('.swiper-container-h')[0].swiper;
-        mySwiper.unlockSwipes();
-		if (mySwiper.realIndex == 0 && activeCards[0].unknown !== null) {
-			putCard(activeCards[0], false, true, null); 
-		} else if (mySwiper.realIndex == 1 && activeCards[1].unknown !== null) {
-			putCard(activeCards[1], false, true, null); 
-		}
-		mySwiper.slideNext();
-	}, 2000);
+		putCard(activeCard, false, true, null); 
+        nextCard();
+    }, 2000);
 }
 function putCard (card, recognition, taught, wpm) {
 	const putData = {
