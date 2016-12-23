@@ -1,3 +1,4 @@
+//data file to add books to userLibrary in localStorage. See variable usage in words.js
 var addToLibrary = {
 	"fugal2016ICanRead":{"link":"https://www.amazon.com/dp/B01M0V7ZUL",
 		"title":"I Can Read a Book to You","author":"Russ Fugal","year":"2016","publisher":"sara.ai books","words":{"i":6,"can":2,"read":3,"a":1,"book":2,"to":1,"you":4,"it":1,"is":2,"something":1,"do":2,"if":1,"that":1,"with":2,"me":1,"will":1,"sit":1,"up":1,"on":2,"your":1,"knee":1,"and":2,"this":3,"how":1,"say":1,"soon":1,"am":1,"reading":1,"my":1,"own":1}},

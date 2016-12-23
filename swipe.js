@@ -1,3 +1,7 @@
+//Copyright 2016 Sara.AI, Inc. Patent Pending
+//Building a Recognized Word Model through flashcard fluency test and deconstruction training. Interface with an Amazon DynamoDB
+//Depricated
+
 var synth = window.speechSynthesis;
 var voices = synth.getVoices();
 var Cards;

@@ -1,5 +1,5 @@
 <?php
-$filename = "./newBooks/fugal2016Test.json";
+$filename = "./newBooks/fugal2016Test.txt";
 $myfile = fopen($filename, "a") or die("Unable to open file!");
 $txt = $_POST["email"]."\n\t".'"'.$_POST["bookName"].'":'."\n".$_POST["bookJson"].",\n";
 fwrite ($myfile, $txt);
